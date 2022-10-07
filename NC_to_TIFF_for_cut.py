@@ -85,4 +85,4 @@ def nc_to_tif(Input_folder):
 
 '''you need to fill in the directory where you store the nc file'''
 
-nc_to_tif(Input_folder=r'C:\PPET_test')
+nc_to_tif(Input_folder=r'C:\Research2\ISIMIP3b_data\TWS')

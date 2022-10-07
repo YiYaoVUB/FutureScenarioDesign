@@ -3,7 +3,7 @@ import csv
 import numpy as np
 
 
-scenario = 'SSP1'
+scenario = 'SSP5'
 
 ISO_country = {}
 with open('C:\Research2\ISO3166-1_codes_and_country_names.csv', encoding='ANSI') as inp:     # read the csv file (Three-Letter-Code: Country-Name)
@@ -88,9 +88,9 @@ pd_reader = pd.read_csv('C:\Research2\Data_for_calculation\Final_calculation\\ur
 data = np.array(pd_reader)
 urb_2015_2100 = data[:, 1:]
 
-file_obj_GDP = open("C:\out_PPET\Data_GDP_"+scenario+".txt",'w')
-file_obj_GOV = open("C:\out_PPET\Data_GOV_"+scenario+".txt",'w')
-file_obj_URB = open("C:\out_PPET\Data_URB_"+scenario+".txt",'w')
+file_obj_GDP = open("C:\out_PPET\Data_GDP_"+scenario+".csv",'w')
+file_obj_GOV = open("C:\out_PPET\Data_GOV_"+scenario+".csv",'w')
+file_obj_URB = open("C:\out_PPET\Data_URB_"+scenario+".csv",'w')
 for i in range(len_country):
     try:
         country_name = ISO_country[country_code[i]]
@@ -109,26 +109,26 @@ for i in range(len_country):
     else:
         str_out_gdp = country_name
         for i in range(3):
-            str_out_gdp = str_out_gdp +  '/ ' + str(gdp_2000_2010[gdp_hist_code, i])
-        for i in range(17):
-            str_out_gdp = str_out_gdp + '/ ' + str(gdp_2015_2100[gdp_proj_code, i])
+            str_out_gdp = str_out_gdp +  ',' + str(gdp_2000_2010[gdp_hist_code, i])
+        for i in range(18):
+            str_out_gdp = str_out_gdp + ',' + str(gdp_2015_2100[gdp_proj_code, i])
 
         str_out_gov = country_name
         for i in range(3):
-            str_out_gov = str_out_gov + '/ ' + str(gov_2000_2010[gov_hist_code, i])
-        for i in range(17):
-            str_out_gov = str_out_gov + '/ ' + str(gov_2015_2100[gov_proj_code, i])
+            str_out_gov = str_out_gov + ',' + str(gov_2000_2010[gov_hist_code, i])
+        for i in range(18):
+            str_out_gov = str_out_gov + ',' + str(gov_2015_2100[gov_proj_code, i])
 
         str_out_urb = country_name
         for i in range(3):
-            str_out_urb = str_out_urb + '/ ' + str(urb_2000_2010[urb_hist_code, i])
-        for i in range(17):
-            str_out_urb = str_out_urb + '/ ' + str(urb_2015_2100[urb_proj_code, i])
+            str_out_urb = str_out_urb + ',' + str(urb_2000_2010[urb_hist_code, i])
+        for i in range(18):
+            str_out_urb = str_out_urb + ',' + str(urb_2015_2100[urb_proj_code, i])
 
 
-        file_obj_GDP.write(str_out_gdp + '/' + '\n')
-        file_obj_GOV.write(str_out_gov + '/' + '\n')
-        file_obj_URB.write(str_out_urb + '/' + '\n')
+        file_obj_GDP.write(str_out_gdp + '\n')
+        file_obj_GOV.write(str_out_gov + '\n')
+        file_obj_URB.write(str_out_urb + '\n')
 
 file_obj_GDP.close()
 file_obj_GOV.close()

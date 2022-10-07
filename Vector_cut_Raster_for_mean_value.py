@@ -25,7 +25,7 @@ def findAllFile(base):
                 fullname = os.path.join(root, f)
                 yield fullname
 
-base = 'C:\out_PPET\\'
+base = 'C:\Research2\ISIMIP3b_data\out_TWS\\'
 for name in findAllFile(base):
     # read the raster file
     output = name + '.csv'
