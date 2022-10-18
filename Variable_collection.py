@@ -197,13 +197,3 @@ for cou in range(1, len_cou):
          file_obj_TWS5.write(str_TWS5 + '\n')
 
 print('test')
-
-
-
-
-
-
-
-
-
-
