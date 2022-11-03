@@ -51,8 +51,9 @@ tws_SSP1 = read_csv_data('C:\Research2\ISIMIP3b_data\\TWS_result\\ssp126.csv')
 tws_SSP3 = read_csv_data('C:\Research2\ISIMIP3b_data\\TWS_result\\ssp370.csv')
 tws_SSP5 = read_csv_data('C:\Research2\ISIMIP3b_data\\TWS_result\\ssp585.csv')
 
-len_cou = len(DRI_country)
+
 country_code = list(Socioeco_code)
+len_cou = len(country_code)
 
 file_obj_GDP1 = open("C:\Research2\Results\Data_technique_GDP_SSP1.csv",'w')
 file_obj_GDP3 = open("C:\Research2\Results\Data_technique_GDP_SSP3.csv",'w')
@@ -98,10 +99,10 @@ def output_str_gene(str_start, num, data):  #generate the str to be outputed
     for x in range(num):
         str_output = str_output + ',' + str(data[x])
     return str_output
-for cou in range(1, len_cou):
+for cou in range(len_cou):
     try:
         country_name = ISO_country[country_code[cou]]
-        i_socio = int(Socioeco_code[country_code[cou]]) -1
+        i_socio = int(Socioeco_code[country_code[cou]])
         i_isimi = int(Isimip_code[country_code[cou]]) -1
         SUR = SUR_country[country_name]
         SPR = SPR_country[country_name]

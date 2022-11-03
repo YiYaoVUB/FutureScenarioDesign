@@ -8,12 +8,12 @@ def findAllFile(base):
                 fullname = os.path.join(root, f)
                 yield fullname
 
-base = 'C:\Research2\ISIMIP3b_data\out_TWS\\'
+base = 'C:\Research2\cft_calcu\out_nc_files\\'
 for name in findAllFile(base):
     output = name + '_noblank.csv'
     df = pd.read_csv(name)
-    d = df[['iso3', 'mean']]
-    d.dropna(subset=['mean'], inplace=True)
+    d = df[['iso3', 'mean', 'count']]       #may need to be changed
+    d.dropna(subset=['mean', 'count'], inplace=True)
     d.dropna(subset=['iso3'], inplace=True)
     #print(df.index[[197]])
     #d.drop(df.index[[197]], axis = 0, inplace=True)

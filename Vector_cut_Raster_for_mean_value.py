@@ -25,7 +25,7 @@ def findAllFile(base):
                 fullname = os.path.join(root, f)
                 yield fullname
 
-base = 'C:\Research2\ISIMIP3b_data\out_TWS\\'
+base = 'C:\Research2\cft_calcu\out_nc_files\\'
 for name in findAllFile(base):
     # read the raster file
     output = name + '.csv'
@@ -35,14 +35,14 @@ for name in findAllFile(base):
     plt.rcParams['font.family'] = 'Times New Roman'
     plt.rcParams['font.size'] = 20
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+    fig, (ax1) = plt.subplots(1, figsize=(15, 6))
 
     show(raster, ax=ax1, title='Rainfall')
     # plot()
     districts.plot(ax=ax1, facecolor='None', edgecolor='red')
-    show_hist(raster, ax=ax2, title='hist')
+    #   show_hist(raster, ax=ax2, title='hist')
 
-    #plt.show()
+    plt.show()
 
     rainfall_data = raster.read(1)
 
@@ -51,13 +51,13 @@ for name in findAllFile(base):
 
 
     # First parameter is raster region, second is raster file, third is the coordination and the fourth is the statistic (you can also choose min or max)
-    avg_rallrain = rasterstats.zonal_stats(districts, rainfall_data, affine=affine, stats=['mean'], geojson_out=True)
+    avg_rallrain = rasterstats.zonal_stats(districts, rainfall_data, affine=affine, stats=['mean', 'count'], geojson_out=True)    #can be mean
     # avg_rallrain
     #print(avg_rallrain)_
     result = []
     for i in range(len(avg_rallrain)):
         result.append(avg_rallrain[i]['properties'])
-    labels = ['color_code', 'continent', 'french_shor', 'iso3', 'iso_3166_1_', 'name', 'region', 'status', 'mean']
+    labels = ['color_code', 'continent', 'french_shor', 'iso3', 'iso_3166_1_', 'name', 'region', 'status', 'mean', 'count'] # also need to be changed
     try:
         with open(output, 'w', encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=labels)

@@ -6,7 +6,17 @@ import glob
 import os
 import shutil
 import rasterio
+import csv
+import os
+import geopandas as gpd
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import rasterio
+import rasterstats
+from rasterio.plot import show
 
+Input_folder=r'C:\Research2\cft_calcu\nc_files'
 
 def NC_to_tiffs(data, out_path):
     coord = 4326  # coordination, ["EPSG","4326"]
@@ -85,4 +95,77 @@ def nc_to_tif(Input_folder):
 
 '''you need to fill in the directory where you store the nc file'''
 
-nc_to_tif(Input_folder=r'C:\Research2\cft_calcu\nc_files')
+
+nc_to_tif(Input_folder)
+out_path = Output_folder = os.path.split(Input_folder)[0] + os.sep + 'out_' + os.path.split(Input_folder)[1]
+# geopandas read the shape file
+districts = gpd.read_file('C:\Shapefile\world-administrative-boundaries\world-administrative-boundaries.shp')
+
+def findAllFile(base):
+    for root, ds, fs in os.walk(base):
+        for f in fs:
+            if f.endswith('.tif'):
+                fullname = os.path.join(root, f)
+                yield fullname
+
+base = out_path
+for name in findAllFile(base):
+    # read the raster file
+    output = name + '.csv'
+    raster = rasterio.open(name)
+
+    # plot them on one figure
+    plt.rcParams['font.family'] = 'Times New Roman'
+    plt.rcParams['font.size'] = 20
+
+    fig, (ax1) = plt.subplots(1, figsize=(15, 6))
+
+    show(raster, ax=ax1, title='Rainfall')
+    # plot()
+    districts.plot(ax=ax1, facecolor='None', edgecolor='red')
+    #   show_hist(raster, ax=ax2, title='hist')
+
+    plt.show()
+
+    rainfall_data = raster.read(1)
+
+    # for coordination
+    affine = raster.transform
+
+
+    # First parameter is raster region, second is raster file, third is the coordination and the fourth is the statistic (you can also choose min or max)
+    avg_rallrain = rasterstats.zonal_stats(districts, rainfall_data, affine=affine, stats=['mean', 'count'], geojson_out=True)    #can be mean
+    # avg_rallrain
+    #print(avg_rallrain)_
+    result = []
+    for i in range(len(avg_rallrain)):
+        result.append(avg_rallrain[i]['properties'])
+    labels = ['color_code', 'continent', 'french_shor', 'iso3', 'iso_3166_1_', 'name', 'region', 'status', 'mean', 'count'] # also need to be changed
+    try:
+        with open(output, 'w', encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=labels)
+            writer.writeheader()
+            for elem in result:
+                writer.writerow(elem)
+    except IOError:
+        print("I/O error")
+
+
+def findAllFile(base):
+    for root, ds, fs in os.walk(base):
+        for f in fs:
+            if f.endswith('.csv'):
+                fullname = os.path.join(root, f)
+                yield fullname
+
+base = out_path
+for name in findAllFile(base):
+    output = name + '_noblank.csv'
+    df = pd.read_csv(name)
+    d = df[['iso3', 'mean', 'count']]       #may need to be changed
+    d.dropna(subset=['mean', 'count'], inplace=True)
+    d.dropna(subset=['iso3'], inplace=True)
+    #print(df.index[[197]])
+    #d.drop(df.index[[197]], axis = 0, inplace=True)
+    d.to_csv(output, index= False)
+    print('test')
