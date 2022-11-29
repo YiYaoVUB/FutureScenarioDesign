@@ -11,9 +11,10 @@ ____________________________________________________________
 
 
 
+1. C:\Research2\ISIMIP3a\P_data\normalize
+Do normalization of precipitation data
 
-
-
+2. PCA_used_for_socio_economic.py
 
 
 
