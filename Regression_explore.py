@@ -13,7 +13,7 @@ def read_csv_data(filename, encode='ANSI'):     # get the socioeconomic data and
     data = np.array(pd_reader)
     return data[:, 1:]
 
-data_to_regression = read_csv_data('C:\Research2\Regression\Data_Regression.csv')
+data_to_regression = read_csv_data('C:\Research2\Regression\Data_Regression_more_than_1000.csv')
 
 SUR = data_to_regression[:, 1]
 SPR = data_to_regression[:, 2]
@@ -27,9 +27,22 @@ APWW = data_to_regression[:, 9]
 PR = data_to_regression[:, 10]
 PPET = data_to_regression[:, 11]
 TWS = data_to_regression[:, 12]
-CFT_SUR = data_to_regression[:, 13]
-CFT_SPR = data_to_regression[:, 14]
-CFT_DRI = data_to_regression[:, 15]
+TAS = data_to_regression[:, 13]
+CFT_SUR = data_to_regression[:, 14]
+CFT_SPR = data_to_regression[:, 15]
+CFT_DRI = data_to_regression[:, 16]
+
+IRR_FRA = data_to_regression[:, 17]
+IRR_per_POP = data_to_regression[:, 18]
+IRR_per_rural_POP = data_to_regression[:, 19]
+
+CFT_MAX = data_to_regression[:, 20]
+CFT_MORE = data_to_regression[:, 21]
+CFT_NOR = data_to_regression[:, 22]
+CFT_MIN = data_to_regression[:, 23]
+CFT_MAXMORE = data_to_regression[:, 24]
+CFT_MAXMORE = data_to_regression[:, 25]
+CFT_HIGH = data_to_regression[:, 26]
 
 def normalize_data(data_array):
     data_after = [(x-min(data_array)) / (max(data_array) - min(data_array)) for x in data_array]
@@ -40,7 +53,7 @@ def LinearRegre(y, X):
     regression = sm.OLS(y, X)
     model = regression.fit()
     print(model.summary())
-    return model.params, model.rsquared, model.pvalues
+    return model.params, model.rsquared_adj, model.pvalues
 
 SUR_after = np.array(normalize_data(SUR))
 SPR_after = np.array(normalize_data(SPR))
@@ -63,6 +76,8 @@ PPET_after = np.array(normalize_data(PPET))
 PPET_after_reshape = PPET_after.reshape(-1, 1)
 TWS_after = np.array(normalize_data(TWS))
 TWS_after_reshape = TWS_after.reshape(-1, 1)
+TAS_after = np.array(normalize_data(TAS))
+TAS_after_reshape = TAS_after.reshape(-1, 1)
 CFT_SUR_after = np.array(normalize_data(CFT_SUR))
 CFT_SUR_after_reshape = CFT_SUR_after.reshape(-1, 1)
 CFT_SPR_after = np.array(normalize_data(CFT_SPR))
@@ -70,16 +85,47 @@ CFT_SPR_after_reshape = CFT_SPR_after.reshape(-1, 1)
 CFT_DRI_after = np.array(normalize_data(CFT_DRI))
 CFT_DRI_after_reshape = CFT_DRI_after.reshape(-1, 1)
 
+IRR_FRA_after = np.array(normalize_data(IRR_FRA))
+IRR_FRA_after_reshape = IRR_FRA_after.reshape(-1, 1)
+IRR_per_POP_after = np.array(normalize_data(IRR_per_POP))
+IRR_per_POP_after_reshape = IRR_per_POP_after.reshape(-1, 1)
+IRR_per_rural_POP_after = np.array(normalize_data(IRR_per_rural_POP))
+IRR_per_rural_POP_after_reshape = IRR_per_rural_POP_after.reshape(-1, 1)
 
+CFT_MAX_after = np.array(normalize_data(CFT_MAX))
+CFT_MAX_after_reshape = CFT_MAX_after.reshape(-1, 1)
+CFT_MORE_after = np.array(normalize_data(CFT_MORE))
+CFT_MORE_after_reshape = CFT_MORE_after.reshape(-1, 1)
+CFT_NOR_after = np.array(normalize_data(CFT_NOR))
+CFT_NOR_after_reshape = CFT_NOR_after.reshape(-1, 1)
+CFT_MIN_after = np.array(normalize_data(CFT_MIN))
+CFT_MIN_after_reshape = CFT_MIN_after.reshape(-1, 1)
+CFT_MAXMORE_after = np.array(normalize_data(CFT_MAXMORE))
+CFT_MAXMORE_after_reshape = CFT_MAXMORE_after.reshape(-1, 1)
 
-X_candid = np.array((GDP_after, GOV_after, URB_after, GII_after, APUSE_after, APWW_after, PR_after, PPET_after, TWS_after, CFT_SUR_after, CFT_SPR_after, CFT_DRI_after))
-X_candid_reshape = np.array((GDP_after_reshape, GOV_after_reshape, URB_after_reshape, GII_after_reshape, APUSE_after_reshape, APWW_after_reshape, PR_after_reshape, PPET_after_reshape, TWS_after_reshape, CFT_SUR_after_reshape, CFT_SPR_after_reshape, CFT_DRI_after_reshape))
-str_candid = ["GDP", "GOV", "URB", "GII", "APUSE", "APWW", "PR", "PPET", "TWS", "CFT_SUR", "CFT_SPR", "CFT_DRI"]
+CFT_HIGH_after = np.array(normalize_data(CFT_HIGH))
+CFT_HIGH_after_reshape = CFT_HIGH_after.reshape(-1, 1)
+
+X_candid = np.array((GDP_after, GOV_after, URB_after, GII_after,
+                     APUSE_after, APWW_after, PR_after, PPET_after, TWS_after, TAS_after,
+                     CFT_SUR_after, CFT_SPR_after, CFT_DRI_after  ,
+                     IRR_FRA_after, IRR_per_POP_after, IRR_per_rural_POP_after ,
+                     CFT_MAX_after, CFT_MORE_after, CFT_NOR_after, CFT_MIN_after, CFT_MAXMORE_after, CFT_HIGH_after))
+X_candid_reshape = np.array((GDP_after_reshape, GOV_after_reshape, URB_after_reshape, GII_after_reshape,
+                             APUSE_after_reshape, APWW_after_reshape, PR_after_reshape, PPET_after_reshape, TWS_after_reshape, TAS_after_reshape,
+                             CFT_SUR_after_reshape, CFT_SPR_after_reshape, CFT_DRI_after_reshape,
+                             IRR_FRA_after_reshape, IRR_per_POP_after_reshape, IRR_per_rural_POP_after_reshape,
+                             CFT_MAX_after_reshape, CFT_MORE_after_reshape, CFT_NOR_after_reshape, CFT_MIN_after_reshape, CFT_MAXMORE_after_reshape, CFT_HIGH_after_reshape))
+str_candid = ["GDP", "GOV", "URB", "GII",
+              "APUSE", "APWW", "PR", "PPET", "TWS", "TAS",
+              "CFT_SUR", "CFT_SPR", "CFT_DRI",
+              "IRR_FRA", "IRR_per_POP", "IRR_per_rural_POP",
+              "CFT_MAX", "CFT_MORE", "CFT_NOR", "CFT_MIN", "CFT_MAXMORE", "CFT_HIGH"]
 y_class = np.array((SUR_after, SPR_after, DRI_after))
 print('test')
 
 def multi_var_regression(var_number, output_SUR, output_SPR, output_DRI):
-    var_combi = list(combinations([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], var_number))
+    var_combi = list(combinations([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21], var_number))
     combi_number = len(var_combi)
     param_var_SUR = np.zeros([combi_number, var_number + 1])
     rsquared_var_SUR = np.zeros([combi_number])
@@ -153,30 +199,46 @@ def multi_var_regression(var_number, output_SUR, output_SPR, output_DRI):
 
 
 
-#   ONE-VAR regression
-multi_var_regression(1, "C:\Research2\Regression\SUR_one.csv", "C:\Research2\Regression\SPR_one.csv", "C:\Research2\Regression\DRI_one.csv")
-#   TWO-VAR regression
-multi_var_regression(2, "C:\Research2\Regression\SUR_two.csv", "C:\Research2\Regression\SPR_two.csv", "C:\Research2\Regression\DRI_two.csv")
-#   THREE-VAR regression
-multi_var_regression(3, "C:\Research2\Regression\SUR_three.csv", "C:\Research2\Regression\SPR_three.csv", "C:\Research2\Regression\DRI_three.csv")
-#   FOUR-VAR regression
+# #   ONE-VAR regression
+# multi_var_regression(1, "C:\Research2\Regression\SUR_one.csv", "C:\Research2\Regression\SPR_one.csv", "C:\Research2\Regression\DRI_one.csv")
+# #   TWO-VAR regression
+# multi_var_regression(2, "C:\Research2\Regression\SUR_two.csv", "C:\Research2\Regression\SPR_two.csv", "C:\Research2\Regression\DRI_two.csv")
+# #   THREE-VAR regression
+#multi_var_regression(3, "C:\Research2\Regression\SUR_three.csv", "C:\Research2\Regression\SPR_three.csv", "C:\Research2\Regression\DRI_three.csv")
+# #   FOUR-VAR regression
 multi_var_regression(4, "C:\Research2\Regression\SUR_four.csv", "C:\Research2\Regression\SPR_four.csv", "C:\Research2\Regression\DRI_four.csv")
-#   FIVE-VAR regression
-multi_var_regression(5, "C:\Research2\Regression\SUR_five.csv", "C:\Research2\Regression\SPR_five.csv", "C:\Research2\Regression\DRI_five.csv")
-#   SIX-VAR regression
-multi_var_regression(6, "C:\Research2\Regression\SUR_six.csv", "C:\Research2\Regression\SPR_six.csv", "C:\Research2\Regression\DRI_six.csv")
-#   SEVEN-VAR regression
-multi_var_regression(7, "C:\Research2\Regression\SUR_seven.csv", "C:\Research2\Regression\SPR_seven.csv", "C:\Research2\Regression\DRI_seven.csv")
-#   EIGHT-VAR regression
-multi_var_regression(8, "C:\Research2\Regression\SUR_eight.csv", "C:\Research2\Regression\SPR_eight.csv", "C:\Research2\Regression\DRI_eight.csv")
-#   NINE-VAR regression
-multi_var_regression(9, "C:\Research2\Regression\SUR_nine.csv", "C:\Research2\Regression\SPR_nine.csv", "C:\Research2\Regression\DRI_nine.csv")
-
-multi_var_regression(10, "C:\Research2\Regression\SUR_ten.csv", "C:\Research2\Regression\SPR_ten.csv", "C:\Research2\Regression\DRI_ten.csv")
-
-multi_var_regression(11, "C:\Research2\Regression\SUR_eleven.csv", "C:\Research2\Regression\SPR_eleven.csv", "C:\Research2\Regression\DRI_eleven.csv")
-
-multi_var_regression(12, "C:\Research2\Regression\SUR_twelve.csv", "C:\Research2\Regression\SPR_twelve.csv", "C:\Research2\Regression\DRI_twelve.csv")
+#multi_var_regression(21, "C:\Research2\Regression\SUR_21.csv", "C:\Research2\Regression\SPR_21.csv", "C:\Research2\Regression\DRI_21.csv")
+#multi_var_regression(22, "C:\Research2\Regression\SUR_22.csv", "C:\Research2\Regression\SPR_22.csv", "C:\Research2\Regression\DRI_22.csv")
+# #   FIVE-VAR regression
+# multi_var_regression(5, "C:\Research2\Regression\SUR_five.csv", "C:\Research2\Regression\SPR_five.csv", "C:\Research2\Regression\DRI_five.csv")
+# #   SIX-VAR regression
+# multi_var_regression(6, "C:\Research2\Regression\SUR_six.csv", "C:\Research2\Regression\SPR_six.csv", "C:\Research2\Regression\DRI_six.csv")
+# #   SEVEN-VAR regression
+# multi_var_regression(7, "C:\Research2\Regression\SUR_seven.csv", "C:\Research2\Regression\SPR_seven.csv", "C:\Research2\Regression\DRI_seven.csv")
+# #   EIGHT-VAR regression
+# multi_var_regression(8, "C:\Research2\Regression\SUR_eight.csv", "C:\Research2\Regression\SPR_eight.csv", "C:\Research2\Regression\DRI_eight.csv")
+# #   NINE-VAR regression
+# multi_var_regression(9, "C:\Research2\Regression\SUR_nine.csv", "C:\Research2\Regression\SPR_nine.csv", "C:\Research2\Regression\DRI_nine.csv")
+#
+# multi_var_regression(10, "C:\Research2\Regression\SUR_ten.csv", "C:\Research2\Regression\SPR_ten.csv", "C:\Research2\Regression\DRI_ten.csv")
+#
+# multi_var_regression(11, "C:\Research2\Regression\SUR_eleven.csv", "C:\Research2\Regression\SPR_eleven.csv", "C:\Research2\Regression\DRI_eleven.csv")
+#
+# multi_var_regression(12, "C:\Research2\Regression\SUR_twelve.csv", "C:\Research2\Regression\SPR_twelve.csv", "C:\Research2\Regression\DRI_twelve.csv")
+#
+# multi_var_regression(13, "C:\Research2\Regression\SUR_thirteen.csv", "C:\Research2\Regression\SPR_thirteen.csv", "C:\Research2\Regression\DRI_thirteen.csv")
+#
+# multi_var_regression(14, "C:\Research2\Regression\SUR_forteen.csv", "C:\Research2\Regression\SPR_forteen.csv", "C:\Research2\Regression\DRI_forteen.csv")
+#
+# multi_var_regression(15, "C:\Research2\Regression\SUR_fifteen.csv", "C:\Research2\Regression\SPR_fifteen.csv", "C:\Research2\Regression\DRI_fifteen.csv")
+#
+# multi_var_regression(16, "C:\Research2\Regression\SUR_sixteen.csv", "C:\Research2\Regression\SPR_sixteen.csv", "C:\Research2\Regression\DRI_sixteen.csv")
+#
+# multi_var_regression(17, "C:\Research2\Regression\SUR_seventeen.csv", "C:\Research2\Regression\SPR_seventeen.csv", "C:\Research2\Regression\DRI_seventeen.csv")
+#
+# multi_var_regression(18, "C:\Research2\Regression\SUR_eighteen.csv", "C:\Research2\Regression\SPR_eighteen.csv", "C:\Research2\Regression\DRI_eighteen.csv")
+#
+# multi_var_regression(19, "C:\Research2\Regression\SUR_nineteen.csv", "C:\Research2\Regression\SPR_nineteen.csv", "C:\Research2\Regression\DRI_nineteen.csv")
 
 def one_var_poly_reg(output_SUR, output_SPR, output_DRI):
     param_var_SUR = np.zeros([9, 3])

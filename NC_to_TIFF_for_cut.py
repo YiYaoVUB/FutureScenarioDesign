@@ -50,7 +50,7 @@ def NC_to_tiffs(data, out_path):
 
     # for missing value
     #   Band[Band[:, :] > 100000] = -999
-    Band[Band[:, :] == 0] = -999
+    Band[Band[:, :] > 100000000] = -999
     # write the data
     if Band.ndim == 2:  # if it is two-dimension, no change
         a = Band[:, :]
@@ -85,4 +85,4 @@ def nc_to_tif(Input_folder):
 
 '''you need to fill in the directory where you store the nc file'''
 
-nc_to_tif(Input_folder=r'C:\Research2\cft_calcu\nc_files')
+nc_to_tif(Input_folder=r'C:\Research2\ISIMIP3a\P_data\ssp126')

@@ -24,29 +24,45 @@ APWW = data_to_regression[:, 9]
 PR = data_to_regression[:, 10]
 PPET = data_to_regression[:, 11]
 TWS = data_to_regression[:, 12]
+TAS = data_to_regression[:, 13]
+SUR_CFT = data_to_regression[:, 14]
+SPR_CFT = data_to_regression[:, 15]
+DRI_CFT = data_to_regression[:, 16]
+IRR_FRA = data_to_regression[:, 17]
+IRR_CAP = data_to_regression[:, 18]
+IRR_RURCAP = data_to_regression[:, 19]
+MAX_CFT = data_to_regression[:, 20]
+MORE_CFT = data_to_regression[:, 21]
+NOR_CFT = data_to_regression[:, 22]
+MIN_CFT = data_to_regression[:, 23]
+MAXMORE_CFT = data_to_regression[:, 24]
 
-X = np.array((GDP, GOV, URB, GII, APUSE, APWW, PR, PPET, TWS))
-str_X = ['GDP', 'GOV', 'URB', 'GII', 'APUSE', 'APWW', 'PR', 'PPET', 'TWS']
+X = np.array((GDP, GOV, URB, GII, APUSE, APWW, PR, PPET, TWS,
+              TAS, SUR_CFT, SPR_CFT, DRI_CFT, IRR_FRA, IRR_CAP, IRR_RURCAP, MAX_CFT, MORE_CFT, NOR_CFT, MIN_CFT, MAXMORE_CFT))
+str_X = ['GDP', 'GOV', 'URB', 'GII', 'APUSE', 'APWW', 'PR', 'PPET', 'TWS',
+         'TAS', 'SUR_CFT', 'SPR_CFT', 'DRI_CFT', 'IRR_FRA', 'IRR_CAP', 'IRR_RURCAP', 'MAX_CFT', 'MORE_CFT', 'NOR_CFT', 'MIN_CFT', 'MAXMORE_CFT']
 
-spearmanr_X = np.zeros([9, 9])
-spearmanp_X = np.zeros([9, 9])
-pearsonr_X = np.zeros([9, 9])
-pearsonp_X = np.zeros([9, 9])
-for i in range (9):
-    for j in range(9):
+size_X = len(X)
+
+spearmanr_X = np.zeros([size_X, size_X])
+spearmanp_X = np.zeros([size_X, size_X])
+pearsonr_X = np.zeros([size_X, size_X])
+pearsonp_X = np.zeros([size_X, size_X])
+for i in range (size_X):
+    for j in range(size_X):
         r, p = spearmanr(X[i, :], X[j, :])
         spearmanr_X[i, j] = r
         spearmanp_X[i, j] = p
         r, p = pearsonr(X[i, :], X[j, :])
         pearsonr_X[i, j] = r
         pearsonp_X[i, j] = p
-spearmanr_X_y = np.zeros([9, 3])
-spearmanp_X_y = np.zeros([9, 3])
+spearmanr_X_y = np.zeros([size_X, 3])
+spearmanp_X_y = np.zeros([size_X, 3])
 
-pearsonr_X_y = np.zeros([9, 3])
-pearsonp_X_y = np.zeros([9, 3])
+pearsonr_X_y = np.zeros([size_X, 3])
+pearsonp_X_y = np.zeros([size_X, 3])
 
-for i in range(9):
+for i in range(size_X):
     r, p = spearmanr(X[i, :], SUR)
     spearmanr_X_y[i, 0] = r
     spearmanp_X_y[i, 0] = p
@@ -69,12 +85,12 @@ for i in range(9):
 
 file_obj_pearson_Xx = open('C:\Research2\Regression\pearson_Xx.csv', 'w')
 file_obj_pearson_Xx.write('pearson R')
-for i in range(9):
+for i in range(size_X):
     file_obj_pearson_Xx.write(',' + str_X[i])
 file_obj_pearson_Xx.write('\n')
-for i in range(9):
+for i in range(size_X):
     file_obj_pearson_Xx.write(str_X[i] + ',')
-    for j in range(9):
+    for j in range(size_X):
         if pearsonp_X[i, j] < 0.01:
             file_obj_pearson_Xx.write(str(round(pearsonr_X[i, j], 4)) + '***,')
         elif pearsonp_X[i, j] < 0.05:
@@ -88,12 +104,12 @@ file_obj_pearson_Xx.close()
 
 file_obj_spearman_Xx = open('C:\Research2\Regression\spearman_Xx.csv', 'w')
 file_obj_spearman_Xx.write('spearman R')
-for i in range(9):
+for i in range(size_X):
     file_obj_spearman_Xx.write(',' + str_X[i])
 file_obj_spearman_Xx.write('\n')
-for i in range(9):
+for i in range(size_X):
     file_obj_spearman_Xx.write(str_X[i] + ',')
-    for j in range(9):
+    for j in range(size_X):
         if spearmanp_X[i, j] < 0.01:
             file_obj_spearman_Xx.write(str(round(spearmanr_X[i, j], 4)) + '***,')
         elif pearsonp_X[i, j] < 0.05:
@@ -113,7 +129,7 @@ file_obj_pearson_X_y.write('pearson R')
 for i in range(3):
     file_obj_pearson_X_y.write(',' + str_Y[i])
 file_obj_pearson_X_y.write('\n')
-for i in range(9):
+for i in range(size_X):
     file_obj_pearson_X_y.write(str_X[i] + ',')
     for j in range(3):
         if pearsonp_X_y[i, j] < 0.01:
@@ -132,7 +148,7 @@ file_obj_spearman_X_y.write('spearman R')
 for i in range(3):
     file_obj_spearman_X_y.write(',' + str_Y[i])
 file_obj_spearman_X_y.write('\n')
-for i in range(9):
+for i in range(size_X):
     file_obj_spearman_X_y.write(str_X[i] + ',')
     for j in range(3):
         if spearmanp_X_y[i, j] < 0.01:

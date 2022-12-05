@@ -37,24 +37,21 @@ def ncfile_create(file, var):       # actually it is not nc creation but rewrite
     ncfile.variables['atotuse'][:,:] =  target[:,:]
     ncfile.close()
 
-AREA_ALL_IRR = read_mat('C:\Research2\cft_calcu\\area_all_irr.mat', 'area_all_irr') # used the ISIMIP3a netcdf file, didn't know why the nc files I created do not work
-AREA_SUR_IRR = read_mat('C:\Research2\cft_calcu\\area_sur_irr.mat', 'area_sur_irr')
-AREA_SPR_IRR = read_mat('C:\Research2\cft_calcu\\area_spr_irr.mat', 'area_spr_irr')
-AREA_DRI_IRR = read_mat('C:\Research2\cft_calcu\\area_dri_irr.mat', 'area_dri_irr')
-AREA_HIGH_IRR = read_mat('C:\Research2\cft_calcu\\area_high_irr.mat', 'area_high_irr')
-AREA_ALL = read_mat('C:\Research2\cft_calcu\\area_all.mat', 'AREA')
+AREA_MAX_IRR = read_mat('C:\Research2\cft_calcu\\area_max_irr.mat', 'area_max_irr') # used the ISIMIP3a netcdf file, didn't know why the nc files I created do not work
+AREA_MIN_IRR = read_mat('C:\Research2\cft_calcu\\area_min_irr.mat', 'area_min_irr')
+AREA_MORE_IRR = read_mat('C:\Research2\cft_calcu\\area_more_irr.mat', 'area_more_irr')
+AREA_NOR_IRR = read_mat('C:\Research2\cft_calcu\\area_nor_irr.mat', 'area_nor_irr')
+#   AREA_ALL = read_mat('C:\Research2\cft_calcu\\area_all.mat', 'AREA')
 LON = read_mat('C:\Research2\cft_calcu\\lon.mat', 'lon')
 LAT = read_mat('C:\Research2\cft_calcu\\lat.mat', 'lat')
 
-ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_all_irr.nc', AREA_ALL_IRR)
+ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_max_irr.nc', AREA_MAX_IRR)    # copy to create the nc file first
 print('area_all_irr.nc finished')
-ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_sur_irr.nc', AREA_SUR_IRR)
+ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_min_irr.nc', AREA_MIN_IRR)
 print('area_sur_irr.nc finished')
-ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_spr_irr.nc', AREA_SPR_IRR)
+ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_more_irr.nc', AREA_MORE_IRR)
 print('area_spr_irr.nc finished')
-ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_dri_irr.nc', AREA_DRI_IRR)
+ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_nor_irr.nc', AREA_NOR_IRR)
 print('area_dri_irr.nc finished')
-ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_high_irr.nc', AREA_HIGH_IRR)
-print('area_high_irr.nc finished')
-ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_all.nc', AREA_ALL)
-print('area_all.nc finished')
+#   ncfile_create('C:\Research2\cft_calcu\\nc_files\\area_all.nc', AREA_ALL)
+#   print('area_all.nc finished')

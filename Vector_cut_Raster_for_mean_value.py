@@ -25,7 +25,7 @@ def findAllFile(base):
                 fullname = os.path.join(root, f)
                 yield fullname
 
-base = 'C:\Research2\cft_calcu\out_nc_files\\'
+base = 'C:\Research2\ISIMIP3a\P_data\\'
 for name in findAllFile(base):
     # read the raster file
     output = name + '.csv'
@@ -51,7 +51,9 @@ for name in findAllFile(base):
 
 
     # First parameter is raster region, second is raster file, third is the coordination and the fourth is the statistic (you can also choose min or max)
-    avg_rallrain = rasterstats.zonal_stats(districts, rainfall_data, affine=affine, stats=['mean', 'count'], geojson_out=True)    #can be mean
+    #   avg_rallrain = rasterstats.zonal_stats(districts, rainfall_data, affine=affine, stats=['mean', 'count'], geojson_out=True)    #can be mean
+    avg_rallrain = rasterstats.zonal_stats(districts, rainfall_data, affine=affine, stats=['mean'],
+                                           geojson_out=True)
     # avg_rallrain
     #print(avg_rallrain)_
     result = []
