@@ -3,7 +3,8 @@ import csv
 import numpy as np
 import scipy.io as scio
 
-scenarios = ['126', '370', '585']
+scenarios = ['126', '370', '585']   # currently we only have data for these three scenarios
+
 def read_csv_data_SSP(filename, encode='ANSI'):  # get the socioeconomic data and ISIMIP data from csv
     pd_reader = pd.read_csv(filename, encoding=encode, header=None)
     data = np.array(pd_reader)
@@ -11,31 +12,31 @@ def read_csv_data_SSP(filename, encode='ANSI'):  # get the socioeconomic data an
 
 for scenario in scenarios:
     # This is the socio data after PCA and Norm
-    socio_data = np.loadtxt(open("C:\Research2\Socioeconomic\Socio_data_SSP" + scenario + ".csv", "rb"), delimiter=",", skiprows=0)
+    socio_data = np.loadtxt(open("C:\Research2\Socioeconomic\Socio_data_SSP" + scenario + ".csv", "rb"), delimiter=",", skiprows=0)     # get the file of socioeconomic data
 
-    Map_code_proj = {}
+    Map_code_proj = {}  # get the dict of country_name - code
     with open('C:\Research2\surf_data\country_index.csv',
               encoding='ANSI') as inp:  # read csv as a dictionary
         reader = csv.reader(inp)
         Map_code_proj = {rows[0]: rows[1] for rows in reader}
 
-    Socio_code_file = {}
+    Socio_code_file = {}    # get the dict of country_code - socio_code
     with open('C:\Research2\Socioeconomic\Socioeconomic_codes.csv',
               encoding='ANSI') as inp:  # read csv as a dictionary
         reader = csv.reader(inp)
         Socio_code_file = {rows[0]: rows[1] for rows in reader}
 
-    # AREA data from the CLM surface dataset
-    hist_AREA_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\AREA.mat')
+    # AREA and PCT_CROP data from the CLM surface dataset
+    hist_AREA_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\AREA.mat') # no problem
     hist_AREA = hist_AREA_dict['AREA']  # grid area data
-    hist_PCT_CROP_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\PCT_CROP.mat')
+    hist_PCT_CROP_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\PCT_CROP.mat') # no problem
     hist_PCT_CROP = hist_PCT_CROP_dict['PCT_CROP']  # percentage of crop land
 
-    # irrigation area and frac
+    # irrigation area and frac, based on Jonas'data and CLM data. THE YEAR 2010
     basic_drip_area_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\\act_drip_area.mat')
     basic_drip_area = basic_drip_area_dict['act_drip_area']
 
-    basic_drip_frac_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\\act_drip_frac.mat')
+    basic_drip_frac_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\\act_drip_frac.mat') # no problem
     basic_drip_frac = basic_drip_frac_dict['act_drip_frac']
 
     basic_spri_area_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\\act_spri_area.mat')
@@ -50,9 +51,11 @@ for scenario in scenarios:
     basic_floo_frac_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\\act_floo_frac.mat')
     basic_floo_frac = basic_floo_frac_dict['act_floo_frac']
 
-    all_CROP_AREA_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\\CROP_AREA.mat')
+
+    all_CROP_AREA_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\\CROP_AREA.mat') # no problem
     all_CROP_AREA = all_CROP_AREA_dict['CROP_AREA']
 
+    # get the optimal irrigation techniques share. based on CFT types
     opt_drip_dict = scio.loadmat('C:\Research2\PCT_CFT_AREA\SSP' + scenario + '\\opt_drip.mat')
     opt_drip = opt_drip_dict['opt_drip']
 
@@ -183,155 +186,116 @@ for scenario in scenarios:
                         print('x = ' + str(x))
                         print('y = ' + str(y))
 
-
-
                         if all_CROP_AREA[x, y, real_year] == 0: # if there is no crop area, let it go
                             continue
                         else:
-                            if time == 0:
-                                flood = basic_floo_frac[x, y]
-                                sprinkler = basic_spri_frac[x, y]
-                                drip = basic_drip_frac[x, y]
-
-                                print('Basic flood frac = ' + str(flood))
-                                print('Basic sprinkler frac = ' + str(sprinkler))
-                                print('Basic drip frac = ' + str(drip))
-
-                                if np.isnan(flood):  # needs to be checked
-                                    try:
-                                        if not (np.isnan(basic_floo_frac[x - 1, y])):
-                                            flood = basic_floo_frac[x - 1, y]
-                                            sprinkler = basic_spri_frac[x - 1, y]
-                                            drip = basic_drip_frac[x - 1, y]
-                                        elif not (np.isnan(basic_floo_frac[x + 1, y])):
-                                            flood = basic_floo_frac[x + 1, y]
-                                            sprinkler = basic_spri_frac[x + 1, y]
-                                            drip = basic_drip_frac[x + 1, y]
-                                        elif not (np.isnan(basic_floo_frac[x, y - 1])):
-                                            flood = basic_floo_frac[x, y - 1]
-                                            sprinkler = basic_spri_frac[x, y - 1]
-                                            drip = basic_drip_frac[x, y - 1]
-                                        elif not (np.isnan(basic_floo_frac[x, y + 1])):
-                                            flood = basic_floo_frac[x, y + 1]
-                                            sprinkler = basic_spri_frac[x, y + 1]
-                                            drip = basic_drip_frac[x, y + 1]
-                                        else:       # needed to be checked
-                                            flood = 1
-                                            sprinkler = 0
-                                            drip = 0
-                                    except (IndexError):
-
+                            #flood = grid_frac[x, y, time-1, 0]
+                            #sprinkler = grid_frac[x, y, time-1, 1]
+                            #drip = grid_frac[x, y, time-1, 2] time-1 -> time
+                            flood = grid_frac[x, y, time, 0]
+                            sprinkler = grid_frac[x, y, time, 1]
+                            drip = grid_frac[x, y, time, 2]
+                            if np.isnan(flood):  # needs to be checked
+                                try:
+                                    if not (np.isnan(grid_frac[x - 1, y, time, 0])):
+                                        flood = grid_frac[x - 1, y, time, 0]
+                                        sprinkler = grid_frac[x - 1, y, time, 1]
+                                        drip = grid_frac[x - 1, y, time, 2]
+                                    elif not (np.isnan(grid_frac[x + 1, y, time, 0])):
+                                        flood = grid_frac[x + 1, y, time, 0]
+                                        sprinkler = grid_frac[x + 1, y, time, 1]
+                                        drip = grid_frac[x + 1, y, time, 2]
+                                    elif not (np.isnan(grid_frac[x, y - 1, time, 0])):
+                                        flood = grid_frac[x, y - 1, time, 0]
+                                        sprinkler = grid_frac[x, y - 1, time, 1]
+                                        drip = grid_frac[x, y - 1, time, 2]
+                                    elif not (np.isnan(grid_frac[x, y + 1, time, 0])):
+                                        flood = grid_frac[x, y + 1, time, 0]
+                                        sprinkler = grid_frac[x, y + 1, time, 1]
+                                        drip = grid_frac[x, y + 1, time, 2]
+                                    else:       # needed to be checked
                                         flood = 1
                                         sprinkler = 0
                                         drip = 0
+                                except (IndexError):
+                                    flood = 1
+                                    sprinkler = 0
+                                    drip = 0
 
+                        str_year = str_year_list[time]
+                        str_P_file = str_P_begin + str_year + str_P_end
 
-                            else:
-                                flood = grid_frac[x, y, time-1, 0]
-                                sprinkler = grid_frac[x, y, time-1, 1]
-                                drip = grid_frac[x, y, time-1, 2]
-                                if np.isnan(flood):  # needs to be checked
-                                    try:
-                                        if not (np.isnan(grid_frac[x - 1, y, time-1, 0])):
-                                            flood = grid_frac[x - 1, y, time-1, 0]
-                                            sprinkler = grid_frac[x - 1, y, time-1, 1]
-                                            drip = grid_frac[x - 1, y, time-1, 2]
-                                        elif not (np.isnan(grid_frac[x + 1, y, time-1, 0])):
-                                            flood = grid_frac[x + 1, y, time-1, 0]
-                                            sprinkler = grid_frac[x + 1, y, time-1, 1]
-                                            drip = grid_frac[x + 1, y, time-1, 2]
-                                        elif not (np.isnan(grid_frac[x, y - 1, time-1, 0])):
-                                            flood = grid_frac[x, y - 1, time-1, 0]
-                                            sprinkler = grid_frac[x, y - 1, time-1, 1]
-                                            drip = grid_frac[x, y - 1, time-1, 2]
-                                        elif not (np.isnan(grid_frac[x, y + 1, time-1, 0])):
-                                            flood = grid_frac[x, y + 1, time-1, 0]
-                                            sprinkler = grid_frac[x, y + 1, time-1, 1]
-                                            drip = grid_frac[x, y + 1, time-1, 2]
-                                        else:       # needed to be checked
-                                            flood = 1
-                                            sprinkler = 0
-                                            drip = 0
-                                    except (IndexError):
+                        optimal_flood = opt_floo[x, y, real_year]
+                        optimal_sprinkler = opt_spri[x, y, real_year]
+                        optimal_drip = opt_drip[x, y, real_year]
 
-                                        flood = 1
-                                        sprinkler = 0
-                                        drip = 0
+                        print('Optimal flood frac = ' + str(optimal_flood))
+                        print('Optimal sprinkler frac = ' + str(optimal_sprinkler))
+                        print('Optimal drip frac = ' + str(optimal_drip))
 
-                            str_year = str_year_list[time - 1]
-                            str_P_file = str_P_begin + str_year + str_P_end
+                        pd_reader = pd.read_csv(str_P_file, header=None)
+                        var_P = np.array(pd_reader)
 
-                            optimal_flood = opt_floo[x, y, real_year]
-                            optimal_sprinkler = opt_spri[x, y, real_year]
-                            optimal_drip = opt_drip[x, y, real_year]
+                        P = var_P[x, y]
+                        hydro_climate = 1 - P
 
-                            print('Optimal flood frac = ' + str(optimal_flood))
-                            print('Optimal sprinkler frac = ' + str(optimal_sprinkler))
-                            print('Optimal drip frac = ' + str(optimal_drip))
+                        socio_eco = socio_data[socio_code, time + 2]  # socio_data needs to be created and loaded
 
-                            pd_reader = pd.read_csv(str_P_file, header=None)
-                            var_P = np.array(pd_reader)
+                        speed = 1
+                        if socio_eco < 0.5:
+                            speed = speed - 0.8
+                        elif socio_eco < 0.75:
+                            speed = speed - 0.4
+                        elif socio_eco < 1:
+                            speed = speed
+                        elif socio_eco < 1.25:
+                            speed = speed + 0.4
+                        else:
+                            speed = speed + 0.8
 
-                            P = var_P[x, y]
-                            hydro_climate = 1 - P
+                        if hydro_climate < 0.25:
+                            speed = speed - 0.2
+                        elif hydro_climate < 0.5:
+                            speed = speed - 0.1
+                        elif hydro_climate < 0.75:
+                            speed = speed
+                        elif hydro_climate < 1:
+                            speed = speed + 0.1
+                        else:
+                            speed = speed + 0.2
 
-                            socio_eco = socio_data[socio_code, time + 2]  # socio_data needs to be created and loaded
+                        speed = speed / 100
 
-                            speed = 1
-                            if socio_eco < 0.5:
-                                speed = speed - 0.8
-                            elif socio_eco < 0.75:
-                                speed = speed - 0.4
-                            elif socio_eco < 1:
-                                speed = speed
-                            elif socio_eco < 1.25:
-                                speed = speed + 0.4
-                            else:
-                                speed = speed + 0.8
+                        #   flood = flood - 5 * speed
+                        sprinkler = sprinkler + 5 * speed * (optimal_sprinkler) / (optimal_sprinkler + optimal_drip)
+                        drip = drip + 5 * speed * (optimal_drip) / (optimal_sprinkler + optimal_drip)
 
-                            if hydro_climate < 0.25:
-                                speed = speed - 0.2
-                            elif hydro_climate < 0.5:
-                                speed = speed - 0.1
-                            elif hydro_climate < 0.75:
-                                speed = speed
-                            elif hydro_climate < 1:
-                                speed = speed + 0.1
-                            else:
-                                speed = speed + 0.2
+                        print('Updated flood frac = ' + str(flood))
+                        print('Updated sprinkler frac = ' + str(sprinkler))
+                        print('Updated drip frac = ' + str(drip))
 
-                            speed = speed / 100
+                        if drip > optimal_drip:
+                            drip = optimal_drip
+                        if sprinkler + drip > optimal_sprinkler + optimal_drip:
+                            sprinkler = optimal_sprinkler + optimal_drip - drip
+                        flood = 1 - drip - sprinkler
 
-                            #   flood = flood - 5 * speed
-                            sprinkler = sprinkler + 5 * speed * (optimal_sprinkler) / (optimal_sprinkler + optimal_drip)
-                            drip = drip + 5 * speed * (optimal_drip) / (optimal_sprinkler + optimal_drip)
+                        print('Adjusted flood frac = ' + str(flood))
+                        print('Adjusted sprinkler frac = ' + str(sprinkler))
+                        print('Adjusted drip frac = ' + str(drip))
 
-                            print('Updated flood frac = ' + str(flood))
-                            print('Updated sprinkler frac = ' + str(sprinkler))
-                            print('Updated drip frac = ' + str(drip))
+                        grid_frac[x, y, time+1, 0] = flood
+                        grid_frac[x, y, time+1, 1] = sprinkler
+                        grid_frac[x, y, time+1, 2] = drip
 
-                            if drip > optimal_drip:
-                                drip = optimal_drip
-                            if sprinkler > optimal_sprinkler:
-                                sprinkler = optimal_sprinkler
-                            flood = 1 - drip - sprinkler
+                        grid_area[x, y, time+1, 0] = all_CROP_AREA[x, y, real_year] * flood
+                        grid_area[x, y, time+1, 1] = all_CROP_AREA[x, y, real_year] * sprinkler
+                        grid_area[x, y, time+1, 2] = all_CROP_AREA[x, y, real_year] * drip
 
-                            print('Adjusted flood frac = ' + str(flood))
-                            print('Adjusted sprinkler frac = ' + str(sprinkler))
-                            print('Adjusted drip frac = ' + str(drip))
-
-                            grid_frac[x, y, time+1, 0] = flood
-                            grid_frac[x, y, time+1, 1] = sprinkler
-                            grid_frac[x, y, time+1, 2] = drip
-
-                            grid_area[x, y, time+1, 0] = all_CROP_AREA[x, y, real_year] * flood
-                            grid_area[x, y, time+1, 1] = all_CROP_AREA[x, y, real_year] * sprinkler
-                            grid_area[x, y, time+1, 2] = all_CROP_AREA[x, y, real_year] * drip
-
-                            all_area[time+1] = all_area[time+1] + all_CROP_AREA[x, y, real_year]
-                            drip_area[time+1] = drip_area[time+1] + all_CROP_AREA[x, y, real_year] * drip
-                            spri_area[time+1] = spri_area[time+1] + all_CROP_AREA[x, y, real_year] * sprinkler
-                            floo_area[time+1] = floo_area[time+1] + all_CROP_AREA[x, y, real_year] * flood
+                        all_area[time+1] = all_area[time+1] + all_CROP_AREA[x, y, real_year]
+                        drip_area[time+1] = drip_area[time+1] + all_CROP_AREA[x, y, real_year] * drip
+                        spri_area[time+1] = spri_area[time+1] + all_CROP_AREA[x, y, real_year] * sprinkler
+                        floo_area[time+1] = floo_area[time+1] + all_CROP_AREA[x, y, real_year] * flood
 
                     floo_country = floo_area[time+1] / all_area[time+1]
                     spri_country = spri_area[time+1] / all_area[time+1]
